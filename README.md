@@ -1,0 +1,1 @@
+A blog where users can publish articles, and leave comments on published content.
