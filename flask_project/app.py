@@ -1,7 +1,7 @@
 from flask import Flask
 from faker import Faker
-from random import choice as random_choice
 import requests
+import csv
 
 
 app = Flask(__name__)
@@ -24,7 +24,6 @@ def read_requirements_txt():
     try:
         with open ('requirements.txt', 'r') as file:
             requirements = file.read()
-            file.close()
             return requirements
     except:
         return f'There is no such file, sorry :('
@@ -34,13 +33,9 @@ def random_email_users_generation(*email_users):
     """
     Random email_users generation
     """
+    email_users = [f'{fake.first_name()} {fake.unique.ascii_email()}' for _ in range(100)]
 
-    users_name = fake.name().split()[0]
-
-    emails = ('@gmail.com', '@yahoo.com', '@ukr.net', '@hotmail.com')
-    random_email_address = random_choice(emails)
-
-    return f'{users_name}{random_email_address}'
+    return '<br>'.join(email_users)
 
 @app.route("/space")
 def space_man():
@@ -52,7 +47,22 @@ def space_man():
 
 @app.route("/mean")
 def count():
-    ...
+    with open('people_data.csv') as file:
+        reader = list(csv.reader(file))
+
+        height = 0
+        weight = 0
+        row = len(reader) - 1
+
+        for index in range(1, row):
+            height += float(reader[index][1])
+            weight += float(reader[index][2])
+
+        average_height = (height / row) * 2.54
+        average_weight = (weight / row) * 0.453592
+
+    return f'Average height is {average_height} cm and average weight is {average_weight} kg'
+    
     
 
 if __name__ == "__main__":
